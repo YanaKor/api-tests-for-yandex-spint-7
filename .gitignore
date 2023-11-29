@@ -2,3 +2,4 @@
 .pytest_cache
 venv
 allure-results
+*/__pycach__
