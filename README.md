@@ -12,4 +12,3 @@
 3. test_delete_courier.py - проверка удаления курьера
 4. test_create_order.py - проверка создания заказа
 5. test_order_list.py - проверка полного списка заказов
-6. 
