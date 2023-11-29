@@ -17,9 +17,9 @@ def unregistered_courier():
     yield payload
 
     del payload['firstName']
-    response = requests.post(EndpointsUrl.LOGIN_COURIER, data=payload)
+    response = requests.post(EndpointsUrl.LOGIN, data=payload)
     courier_id = response.json()["id"]
-    requests.delete(f'{EndpointsUrl.CREATE_COURIER}{courier_id}')
+    requests.delete(f'{EndpointsUrl.COURIER}{courier_id}')
 
 
 @pytest.fixture
@@ -32,6 +32,7 @@ def registered_courier():
 
     yield payload
 
-    response = requests.post(EndpointsUrl.LOGIN_COURIER, data=payload)
+    response = requests.post(EndpointsUrl.LOGIN, data=payload)
     courier_id = response.json()["id"]
-    requests.delete(f'{EndpointsUrl.CREATE_COURIER}{courier_id}')
+    requests.delete(f'{EndpointsUrl.COURIER}{courier_id}')
+

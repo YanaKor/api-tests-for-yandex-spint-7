@@ -13,29 +13,18 @@ class TestLoginCourier:
     @allure.description('Проверка "id" курьера при авторизации')
     def test_login_courier_success(self, registered_courier):
         payload = registered_courier
-        response = requests.post(EndpointsUrl.LOGIN_COURIER, data=payload)
+        response = requests.post(EndpointsUrl.LOGIN, data=payload)
         assert response.status_code == 200 and 'id' in response.text
 
     @allure.title('Ошибка авторизации курьера')
-    @allure.description('Проверка входа без заполненного поля логина')
-    def test_login_courier_without_login_field(self, registered_courier):
+    @allure.description('Проверка входа без заполненного обязательного поля')
+    @pytest.mark.parametrize('field_to_change', ['login', 'password'])
+    def test_login_courier_without_password_field(self, registered_courier, field_to_change):
         payload = registered_courier.copy()
-        del payload['login']
-        response = requests.post(EndpointsUrl.LOGIN_COURIER, data=payload)
+        payload[field_to_change] = ''
+        response = requests.post(EndpointsUrl.LOGIN, data=payload)
         assert response.status_code == 400 and response.json().get('message') \
                == "Недостаточно данных для входа"
-
-    # @allure.title('Ошибка авторизации курьера')
-    # @allure.description('Проверка входа без заполненного поля пароля')
-    # def test_login_courier_without_password_field(self, registered_courier):
-    #     payload = registered_courier.copy()
-    #     del payload['password']
-    #     response = requests.post(EndpointsUrl.LOGIN_COURIER, data=payload)
-    #     try:
-    #         resp = response.json()
-    #         assert resp.get('message') == "Недостаточно данных для входа"
-    #     except Exception:
-    #         raise AssertionError('Невозможно извлечь тело ответа. Возможна ошибка сервера')
 
     @allure.title('Ошибка авторизации курьера')
     @allure.description('Проверка авторизации курьера с невалидными данными')
@@ -43,7 +32,7 @@ class TestLoginCourier:
     def test_login_courier_with_invalid_field(self, registered_courier, invalid_field):
         payload = registered_courier.copy()
         payload[invalid_field] += '1'
-        response = requests.post(EndpointsUrl.LOGIN_COURIER, data=payload)
+        response = requests.post(EndpointsUrl.LOGIN, data=payload)
         assert response.status_code == 404 and response.json().get('message') == "Учетная запись не найдена"
 
     @allure.title('Ошибка авторизации')
@@ -54,7 +43,7 @@ class TestLoginCourier:
             'login': login,
             'password': password
         }
-        response = requests.post(EndpointsUrl.LOGIN_COURIER, data=payload)
+        response = requests.post(EndpointsUrl.LOGIN, data=payload)
         assert response.status_code == 404 and response.json().get('message') == 'Учетная запись не найдена'
 
 
